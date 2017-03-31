@@ -19,7 +19,7 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders.Queries
 
         public async Task<CallOffOrder> Ask(FindById criterion)
         {
-            using (var client = new MyCouchClient("http://cmas-backend:backend967@cm-ylng-msk-03:5984", "call-off-orders"))
+            using (var client = new MyCouchClient(DbConsts.DbConnectionString, DbConsts.DbName))
             {
  
                 var dto = await client.Entities.GetAsync<CallOffOrderDto>(criterion.Id);

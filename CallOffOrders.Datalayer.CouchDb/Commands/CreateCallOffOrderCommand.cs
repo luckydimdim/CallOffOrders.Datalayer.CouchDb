@@ -19,7 +19,7 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders.Commands
 
         public async Task<CreateCallOffOrderCommandContext> Execute(CreateCallOffOrderCommandContext commandContext)
         {
-            using (var store = new MyCouchStore("http://cmas-backend:backend967@cm-ylng-msk-03:5984", "call-off-orders"))
+            using (var store = new MyCouchStore(DbConsts.DbConnectionString, DbConsts.DbName))
             {
                 var doc = _autoMapper.Map<CallOffOrderDto>(commandContext.Form);
 

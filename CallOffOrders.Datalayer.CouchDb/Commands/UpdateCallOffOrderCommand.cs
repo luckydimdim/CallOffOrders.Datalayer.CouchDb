@@ -21,7 +21,7 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders.Commands
 
         public async Task<UpdateCallOffOrderCommandContext> Execute(UpdateCallOffOrderCommandContext commandContext)
         {
-            using (var client = new MyCouchClient("http://cmas-backend:backend967@cm-ylng-msk-03:5984", "call-off-orders"))
+            using (var client = new MyCouchClient(DbConsts.DbConnectionString, DbConsts.DbName))
             {
                 // FIXME: нельзя так делать, надо от frontend получать
                 var existingDoc = (await client.Entities.GetAsync<CallOffOrderDto>(commandContext.Form.Id)).Content;
