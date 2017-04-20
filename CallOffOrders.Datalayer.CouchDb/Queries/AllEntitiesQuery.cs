@@ -31,11 +31,8 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders.Queries
                 var viewResult = await client.Views.QueryAsync<CallOffOrderDto>(query);
 
                 foreach (var row in viewResult.Rows.OrderByDescending(s => s.Value.CreatedAt))
-                {
-
-                    var order = _autoMapper.Map<CallOffOrder>(row.Value);
-                    order.Id = row.Value._id;
-                    result.Add(order);
+                { 
+                    result.Add(_autoMapper.Map<CallOffOrder>(row.Value));
                 }
 
                 return result;

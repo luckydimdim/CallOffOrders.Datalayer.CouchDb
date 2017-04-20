@@ -10,7 +10,11 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders
         {
             CreateMap<CallOffOrder, CallOffOrderDto>();
             CreateMap<Rate, RateDto>();
-            CreateMap<CallOffOrderDto, CallOffOrder>();
+            CreateMap<CallOffOrderDto, CallOffOrder>()
+                .ForMember(
+                    dest => dest.Id,
+                    opt => opt.MapFrom(src => src._id));
+
             CreateMap<RateDto, Rate>();
         }
     }
