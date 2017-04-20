@@ -4,13 +4,13 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders.Dtos
 {
     public class RateDto
     {
-        public int Id;
+        public string Id;
 
         public String Name;
 
         public bool IsRate;
 
-        public int? ParentId;
+        public string ParentId;
 
         /// <summary>
         /// Ставка
