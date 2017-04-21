@@ -5,45 +5,48 @@ using Cmas.DataLayers.CouchDb.CallOffOrders.Dtos;
 using MyCouch;
 using Cmas.BusinessLayers.CallOffOrders.CommandsContexts;
 using Cmas.Infrastructure.Domain.Commands;
+using Microsoft.Extensions.Logging;
 
 namespace Cmas.DataLayers.CouchDb.CallOffOrders.Commands
 {
- 
     public class UpdateCallOffOrderCommand : ICommand<UpdateCallOffOrderCommandContext>
     {
-
         private IMapper _autoMapper;
 
-        public UpdateCallOffOrderCommand(IMapper autoMapper)
+        private readonly ILogger _logger;
+        private readonly CouchDbWrapper _couchWrapper;
+
+        public UpdateCallOffOrderCommand(IMapper autoMapper, ILoggerFactory loggerFactory)
         {
             _autoMapper = autoMapper;
+            _logger = loggerFactory.CreateLogger<UpdateCallOffOrderCommand>();
+            _couchWrapper = new CouchDbWrapper(DbConsts.DbConnectionString, DbConsts.DbName, _logger);
         }
 
         public async Task<UpdateCallOffOrderCommandContext> Execute(UpdateCallOffOrderCommandContext commandContext)
         {
-            using (var client = new MyCouchClient(DbConsts.DbConnectionString, DbConsts.DbName))
+            // FIXME: нельзя так делать, надо от frontend получать
+            var existingDocResult = await _couchWrapper.GetResponseAsync(async (client) =>
             {
-                // FIXME: нельзя так делать, надо от frontend получать
-                var existingDoc = (await client.Entities.GetAsync<CallOffOrderDto>(commandContext.Form.Id)).Content;
- 
-                var newDto = _autoMapper.Map<CallOffOrderDto>(commandContext.Form);
-                newDto._id = existingDoc._id;
-                newDto.Status = existingDoc.Status;
-                newDto._rev = existingDoc._rev;
-                newDto.UpdatedAt = DateTime.Now;
+                return await client.Entities.GetAsync<CallOffOrderDto>(commandContext.Form.Id);
+            });
 
-                var result = await client.Entities.PutAsync(newDto._id, newDto);
+            var existingDoc = existingDocResult.Content;
 
-                if (!result.IsSuccess)
-                {
-                    throw new Exception(result.Error);
-                }
+            var newDto = _autoMapper.Map<CallOffOrderDto>(commandContext.Form);
+            newDto._id = existingDoc._id;
+            newDto.Status = existingDoc.Status;
+            newDto._rev = existingDoc._rev;
+            newDto.UpdatedAt = DateTime.Now;
 
-                // TODO: возвращать _revid
+            var result = await _couchWrapper.GetResponseAsync(async (client) =>
+            {
+                return await client.Entities.PutAsync(newDto._id, newDto);
+            });
 
-                return commandContext;
-            }
+            // TODO: возвращать _revid
 
+            return commandContext;
         }
     }
 }
