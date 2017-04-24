@@ -27,16 +27,13 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders.Commands
         {
             var doc = _autoMapper.Map<CallOffOrderDto>(commandContext.Form);
 
-            doc._id = null;
-            doc._rev = null;
-
             var result = await _couchWrapper.GetResponseAsync(async (client) =>
             {
                 return await client.Entities.PostAsync(doc);
             });
 
             commandContext.Id = result.Id;
-             
+
             return commandContext;
         }
     }

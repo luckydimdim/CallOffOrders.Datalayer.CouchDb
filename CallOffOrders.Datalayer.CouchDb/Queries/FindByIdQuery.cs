@@ -5,7 +5,6 @@ using Cmas.Infrastructure.Domain.Criteria;
 using Cmas.Infrastructure.Domain.Queries;
 using Cmas.BusinessLayers.CallOffOrders.Entities;
 using Microsoft.Extensions.Logging;
-using MyCouch.Responses;
 
 namespace Cmas.DataLayers.CouchDb.CallOffOrders.Queries
 {

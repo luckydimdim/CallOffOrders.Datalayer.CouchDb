@@ -21,6 +21,19 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders
             this.logger = logger;
         }
 
+        private void CheckResponse(Response response)
+        {
+            if (!response.IsSuccess)
+            {
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new NotFoundErrorException();
+                }
+
+                throw new Exception("Unknown exception");
+            }
+        }
+
         public async Task<T> GetResponseAsync<T>(Func<MyCouchClient, Task<T>> method) where T : Response
         {
             using (var client = new MyCouchClient(dbConnectionString, dbName))
@@ -29,21 +42,13 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders
 
                 logger.LogInformation(result.ToStringDebugVersion());
 
-                if (!result.IsSuccess)
-                {
-                    if (result.StatusCode == HttpStatusCode.NotFound)
-                    {
-                        throw new NotFoundErrorException();
-                    }
-
-                    throw new Exception("Unknown exception");
-                }
+                CheckResponse(result);
 
                 return result;
             }
         }
 
-        /*public async Task<T> GetResponseAsync<T>(Func<MyCouchStore, Task<T>> method) where T : Response
+        public async Task<T> GetResponseAsync<T>(Func<MyCouchStore, Task<T>> method) where T : Response
         {
             using (var store = new MyCouchStore(dbConnectionString, dbName))
             {
@@ -51,19 +56,24 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders
 
                 logger.LogInformation(result.ToStringDebugVersion());
 
-                if (!result.IsSuccess)
-                {
-                    if (result.StatusCode == HttpStatusCode.NotFound)
-                    {
-                        throw new NotFoundErrorException();
-                    }
-
-                    throw new Exception("Unknown exception");
-                }
+                CheckResponse(result);
 
                 return result;
             }
-        }*/
-    }
+        }
 
+        public async Task<IDocumentHeader> GetHeaderAsync(string id, string rev = null)
+        {
+            using (var client = new MyCouchClient(dbConnectionString, dbName))
+            {
+                var result = await client.Documents.HeadAsync(id, rev);
+
+                logger.LogInformation(result.ToStringDebugVersion());
+
+                CheckResponse(result);
+
+                return result;
+            }
+        }
+    }
 }

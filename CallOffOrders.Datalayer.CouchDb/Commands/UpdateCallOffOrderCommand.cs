@@ -25,23 +25,16 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders.Commands
 
         public async Task<UpdateCallOffOrderCommandContext> Execute(UpdateCallOffOrderCommandContext commandContext)
         {
-            // FIXME: нельзя так делать, надо от frontend получать
-            var existingDocResult = await _couchWrapper.GetResponseAsync(async (client) =>
-            {
-                return await client.Entities.GetAsync<CallOffOrderDto>(commandContext.Form.Id);
-            });
+            // FIXME: нельзя так делать, надо от frontend получать Rev
+            var header = await _couchWrapper.GetHeaderAsync(commandContext.Form.Id);
+             
+            var entity = _autoMapper.Map<CallOffOrderDto>(commandContext.Form);
 
-            var existingDoc = existingDocResult.Content;
-
-            var newDto = _autoMapper.Map<CallOffOrderDto>(commandContext.Form);
-            newDto._id = existingDoc._id;
-            newDto.Status = existingDoc.Status;
-            newDto._rev = existingDoc._rev;
-            newDto.UpdatedAt = DateTime.Now;
-
+            entity._rev = header.Rev;
+             
             var result = await _couchWrapper.GetResponseAsync(async (client) =>
             {
-                return await client.Entities.PutAsync(newDto._id, newDto);
+                return await client.Entities.PutAsync(entity._id, entity);
             });
 
             // TODO: возвращать _revid
