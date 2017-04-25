@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Cmas.DataLayers.CouchDb.CallOffOrders.Dtos;
-using MyCouch;
+using Cmas.DataLayers.Infrastructure;
 using MyCouch.Requests;
 using Cmas.Infrastructure.Domain.Queries;
 using Cmas.BusinessLayers.CallOffOrders.Entities;
@@ -16,13 +16,13 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders.Queries
     {
         private IMapper _autoMapper;
         private readonly ILogger _logger;
-        private readonly CouchDbWrapper _couchWrapper;
+        private readonly CouchWrapper _couchWrapper;
 
         public AllEntitiesQuery(IMapper autoMapper, ILoggerFactory loggerFactory)
         {
             _autoMapper = autoMapper;
-            _logger = loggerFactory.CreateLogger<FindByContractIdQuery>();
-            _couchWrapper = new CouchDbWrapper(DbConsts.DbConnectionString, DbConsts.DbName, _logger);
+            _logger = loggerFactory.CreateLogger<AllEntitiesQuery>();
+            _couchWrapper = new CouchWrapper(DbConsts.DbConnectionString, DbConsts.DbName, _logger);
         }
 
         public async Task<IEnumerable<CallOffOrder>> Ask(AllEntities criterion)

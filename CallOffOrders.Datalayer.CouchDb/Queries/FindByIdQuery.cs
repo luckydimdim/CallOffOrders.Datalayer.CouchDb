@@ -5,6 +5,7 @@ using Cmas.Infrastructure.Domain.Criteria;
 using Cmas.Infrastructure.Domain.Queries;
 using Cmas.BusinessLayers.CallOffOrders.Entities;
 using Microsoft.Extensions.Logging;
+using Cmas.DataLayers.Infrastructure;
 
 namespace Cmas.DataLayers.CouchDb.CallOffOrders.Queries
 {
@@ -12,13 +13,13 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders.Queries
     {
         private readonly IMapper _autoMapper;
         private readonly ILogger _logger;
-        private readonly CouchDbWrapper _couchWrapper;
+        private readonly CouchWrapper _couchWrapper;
 
         public FindByIdQuery(IMapper autoMapper, ILoggerFactory loggerFactory)
         {
             _autoMapper = autoMapper;
             _logger = loggerFactory.CreateLogger<FindByIdQuery>();
-            _couchWrapper = new CouchDbWrapper(DbConsts.DbConnectionString, DbConsts.DbName, _logger);
+            _couchWrapper = new CouchWrapper(DbConsts.DbConnectionString, DbConsts.DbName, _logger);
         }
 
         public async Task<CallOffOrder> Ask(FindById criterion)

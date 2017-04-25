@@ -1,26 +1,24 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using Cmas.DataLayers.CouchDb.CallOffOrders.Dtos;
-using MyCouch;
 using Cmas.BusinessLayers.CallOffOrders.CommandsContexts;
 using Cmas.Infrastructure.Domain.Commands;
 using Microsoft.Extensions.Logging;
+using Cmas.DataLayers.Infrastructure;
 
 namespace Cmas.DataLayers.CouchDb.CallOffOrders.Commands
 {
     public class UpdateCallOffOrderCommand : ICommand<UpdateCallOffOrderCommandContext>
     {
         private IMapper _autoMapper;
-
         private readonly ILogger _logger;
-        private readonly CouchDbWrapper _couchWrapper;
+        private readonly CouchWrapper _couchWrapper;
 
         public UpdateCallOffOrderCommand(IMapper autoMapper, ILoggerFactory loggerFactory)
         {
             _autoMapper = autoMapper;
             _logger = loggerFactory.CreateLogger<UpdateCallOffOrderCommand>();
-            _couchWrapper = new CouchDbWrapper(DbConsts.DbConnectionString, DbConsts.DbName, _logger);
+            _couchWrapper = new CouchWrapper(DbConsts.DbConnectionString, DbConsts.DbName, _logger);
         }
 
         public async Task<UpdateCallOffOrderCommandContext> Execute(UpdateCallOffOrderCommandContext commandContext)
@@ -36,10 +34,8 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders.Commands
             {
                 return await client.Entities.PutAsync(entity._id, entity);
             });
-
-            // TODO: возвращать _revid
-
-            return commandContext;
+             
+            return commandContext;   // TODO: возвращать _revid
         }
     }
 }

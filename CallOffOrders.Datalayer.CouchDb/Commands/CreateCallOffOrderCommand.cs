@@ -1,12 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using Cmas.DataLayers.CouchDb.CallOffOrders.Dtos;
-using MyCouch;
 using Cmas.BusinessLayers.CallOffOrders.CommandsContexts;
-using Cmas.DataLayers.CouchDb.CallOffOrders.Queries;
 using Cmas.Infrastructure.Domain.Commands;
 using Microsoft.Extensions.Logging;
+using Cmas.DataLayers.Infrastructure;
 
 namespace Cmas.DataLayers.CouchDb.CallOffOrders.Commands
 {
@@ -14,13 +12,13 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders.Commands
     {
         private IMapper _autoMapper;
         private readonly ILogger _logger;
-        private readonly CouchDbWrapper _couchWrapper;
+        private readonly CouchWrapper _couchWrapper;
 
         public CreateCallOffOrderCommand(IMapper autoMapper, ILoggerFactory loggerFactory)
         {
             _autoMapper = autoMapper;
-            _logger = loggerFactory.CreateLogger<FindByContractIdQuery>();
-            _couchWrapper = new CouchDbWrapper(DbConsts.DbConnectionString, DbConsts.DbName, _logger);
+            _logger = loggerFactory.CreateLogger<CreateCallOffOrderCommand>();
+            _couchWrapper = new CouchWrapper(DbConsts.DbConnectionString, DbConsts.DbName, _logger);
         }
 
         public async Task<CreateCallOffOrderCommandContext> Execute(CreateCallOffOrderCommandContext commandContext)
