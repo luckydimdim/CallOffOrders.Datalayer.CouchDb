@@ -1,20 +1,18 @@
 ﻿using System.Threading.Tasks;
 using Cmas.BusinessLayers.CallOffOrders.CommandsContexts;
 using Cmas.Infrastructure.Domain.Commands;
-using Microsoft.Extensions.Logging;
+using System;
 using Cmas.DataLayers.Infrastructure;
 
 namespace Cmas.DataLayers.CouchDb.CallOffOrders.Commands
 {
     public class DeleteCallOffOrderCommand : ICommand<DeleteCallOffOrderCommandContext>
-    {
-        private readonly ILogger _logger;
+    { 
         private readonly CouchWrapper _couchWrapper;
 
-        public DeleteCallOffOrderCommand(ILoggerFactory loggerFactory)
-        {
-            _logger = loggerFactory.CreateLogger<DeleteCallOffOrderCommand>();
-            _couchWrapper = new CouchWrapper(DbConsts.DbConnectionString, DbConsts.DbName, _logger);
+        public DeleteCallOffOrderCommand(IServiceProvider serviceProvider)
+        {  
+            _couchWrapper = new CouchWrapper(serviceProvider, DbConsts.ServiceName);
         }
 
         public async Task<DeleteCallOffOrderCommandContext> Execute(DeleteCallOffOrderCommandContext commandContext)

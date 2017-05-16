@@ -4,22 +4,22 @@ using Cmas.DataLayers.CouchDb.CallOffOrders.Dtos;
 using Cmas.Infrastructure.Domain.Criteria;
 using Cmas.Infrastructure.Domain.Queries;
 using Cmas.BusinessLayers.CallOffOrders.Entities;
-using Microsoft.Extensions.Logging;
+using System;
 using Cmas.DataLayers.Infrastructure;
+
 
 namespace Cmas.DataLayers.CouchDb.CallOffOrders.Queries
 {
     public class FindByIdQuery : IQuery<FindById, Task<CallOffOrder>>
     {
         private readonly IMapper _autoMapper;
-        private readonly ILogger _logger;
         private readonly CouchWrapper _couchWrapper;
 
-        public FindByIdQuery(IMapper autoMapper, ILoggerFactory loggerFactory)
+        public FindByIdQuery(IServiceProvider serviceProvider)
         {
-            _autoMapper = autoMapper;
-            _logger = loggerFactory.CreateLogger<FindByIdQuery>();
-            _couchWrapper = new CouchWrapper(DbConsts.DbConnectionString, DbConsts.DbName, _logger);
+            _autoMapper = (IMapper)serviceProvider.GetService(typeof(IMapper));
+
+            _couchWrapper = new CouchWrapper(serviceProvider, DbConsts.ServiceName);
         }
 
         public async Task<CallOffOrder> Ask(FindById criterion)

@@ -7,22 +7,21 @@ using MyCouch.Requests;
 using Cmas.Infrastructure.Domain.Queries;
 using Cmas.BusinessLayers.CallOffOrders.Criteria;
 using Cmas.BusinessLayers.CallOffOrders.Entities;
-using Microsoft.Extensions.Logging;
+using System;
 using Cmas.DataLayers.Infrastructure;
 
 namespace Cmas.DataLayers.CouchDb.CallOffOrders.Queries
 {
     public class FindByContractIdQuery : IQuery<FindByContractId, Task<IEnumerable<CallOffOrder>>>
     {
-        private IMapper _autoMapper;
-        private readonly ILogger _logger;
+        private readonly IMapper _autoMapper;
         private readonly CouchWrapper _couchWrapper;
 
-        public FindByContractIdQuery(IMapper autoMapper, ILoggerFactory loggerFactory)
+        public FindByContractIdQuery(IServiceProvider serviceProvider)
         {
-            _autoMapper = autoMapper;
-            _logger = loggerFactory.CreateLogger<FindByContractIdQuery>();
-            _couchWrapper = new CouchWrapper(DbConsts.DbConnectionString, DbConsts.DbName, _logger);
+            _autoMapper = (IMapper)serviceProvider.GetService(typeof(IMapper));
+
+            _couchWrapper = new CouchWrapper(serviceProvider, DbConsts.ServiceName);
         }
 
         public async Task<IEnumerable<CallOffOrder>> Ask(FindByContractId criterion)

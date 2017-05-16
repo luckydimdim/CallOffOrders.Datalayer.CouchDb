@@ -3,22 +3,21 @@ using AutoMapper;
 using Cmas.DataLayers.CouchDb.CallOffOrders.Dtos;
 using Cmas.BusinessLayers.CallOffOrders.CommandsContexts;
 using Cmas.Infrastructure.Domain.Commands;
-using Microsoft.Extensions.Logging;
+using System;
 using Cmas.DataLayers.Infrastructure;
 
 namespace Cmas.DataLayers.CouchDb.CallOffOrders.Commands
 {
     public class UpdateCallOffOrderCommand : ICommand<UpdateCallOffOrderCommandContext>
     {
-        private IMapper _autoMapper;
-        private readonly ILogger _logger;
+        private readonly IMapper _autoMapper;
         private readonly CouchWrapper _couchWrapper;
 
-        public UpdateCallOffOrderCommand(IMapper autoMapper, ILoggerFactory loggerFactory)
+        public UpdateCallOffOrderCommand(IServiceProvider serviceProvider)
         {
-            _autoMapper = autoMapper;
-            _logger = loggerFactory.CreateLogger<UpdateCallOffOrderCommand>();
-            _couchWrapper = new CouchWrapper(DbConsts.DbConnectionString, DbConsts.DbName, _logger);
+            _autoMapper = (IMapper)serviceProvider.GetService(typeof(IMapper));
+
+            _couchWrapper = new CouchWrapper(serviceProvider, DbConsts.ServiceName);
         }
 
         public async Task<UpdateCallOffOrderCommandContext> Execute(UpdateCallOffOrderCommandContext commandContext)
