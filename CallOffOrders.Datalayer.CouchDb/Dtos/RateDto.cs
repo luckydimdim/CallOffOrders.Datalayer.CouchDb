@@ -16,12 +16,7 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders.Dtos
         /// Ставка
         /// </summary>
         public double Amount;
-
-        /// <summary>
-        /// Валюта
-        /// </summary>
-        public String Currency;
-
+        
         /// <summary>
         /// Ед. изм.
         /// </summary>

@@ -113,6 +113,11 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders.Dtos
         /// </summary>
         public ICollection<RateDto> Rates;
 
+        /// <summary>
+        /// Валюта 
+        /// </summary>
+        public string CurrencySysName;
+
         public CallOffOrderDto()
         {
             Rates = new List<RateDto>();

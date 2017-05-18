@@ -22,7 +22,7 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders.Commands
 
         public async Task<CreateCallOffOrderCommandContext> Execute(CreateCallOffOrderCommandContext commandContext)
         {
-            var doc = _autoMapper.Map<CallOffOrderDto>(commandContext.Form);
+            var doc = _autoMapper.Map<CallOffOrderDto>(commandContext.CallOffOrder);
 
             var result = await _couchWrapper.GetResponseAsync(async (client) =>
             {
