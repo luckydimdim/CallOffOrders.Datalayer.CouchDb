@@ -29,6 +29,9 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders.Queries
                 return await client.Entities.GetAsync<CallOffOrderDto>(criterion.Id);
             });
 
+            if (result == null)
+                return null;
+
             return _autoMapper.Map<CallOffOrder>(result.Content);
         }
     }

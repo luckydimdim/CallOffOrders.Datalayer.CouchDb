@@ -23,9 +23,9 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders.Commands
         public async Task<UpdateCallOffOrderCommandContext> Execute(UpdateCallOffOrderCommandContext commandContext)
         {
             // FIXME: нельзя так делать, надо от frontend получать Rev
-            var header = await _couchWrapper.GetHeaderAsync(commandContext.Form.Id);
+            var header = await _couchWrapper.GetHeaderAsync(commandContext.CallOffOrder.Id);
              
-            var entity = _autoMapper.Map<CallOffOrderDto>(commandContext.Form);
+            var entity = _autoMapper.Map<CallOffOrderDto>(commandContext.CallOffOrder);
 
             entity._rev = header.Rev;
              
