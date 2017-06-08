@@ -20,7 +20,7 @@ namespace Cmas.DataLayers.CouchDb.CallOffOrders.Dtos
         /// <summary>
         /// Ед. изм.
         /// </summary>
-        public String UnitName;
+        public int? Unit;
 
     }
 }
